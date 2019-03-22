@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Result</title>
+  </head>
+  <body style="background-color:HotPink;">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>ID</th>
+      </tr>
+      {% for x in result %}
+      <tr>
+        <td>{{x.name}}</td>
+        <td>{{x.id}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

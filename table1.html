@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Result</title>
+  </head>
+  <body style="background-color:DeepPink;">
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Tagline</th>
+        <th>First Brewed</th>
+        <th>Description</th>
+        <th>Food pairing</th>
+      </tr>
+      {% for x in result %}
+      <tr>
+        <td>{{x.name}}</td>
+        <td>{{x.tagline}}</td>
+        <td>{{x.first_brewed}}</td>
+        <td>{{x.description}}</td>
+        <td>{{x.food_pairing}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
