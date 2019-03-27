@@ -1,10 +1,29 @@
 from flask import Flask, render_template, request, jsonify
-import plotly.graph_objs as go
-from plotly.utils import PlotlyJSONEncoder
 import json
 import requests
 from pprint import pprint
-import requests_cache
+from functools import wraps
+from flask import  Response
+
+def check_auth(username, password):
+    return username == 'aak36' and password == 'heihei2'
+
+def authenticate():
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+
 
 app = Flask(__name__)
 
@@ -15,6 +34,7 @@ random_url = 'https://api.punkapi.com/v2/beers/random'
 id_url = 'https://api.punkapi.com/v2/beers/{id}'
 
 @app.route('/')
+@requires_auth
 def hello():
     return "<h1> Welcome to Punk API!</h1>"
 
@@ -82,4 +102,4 @@ def beer_id(id_name):
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(port= 5000, debug=True)
