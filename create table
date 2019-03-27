@@ -1,0 +1,28 @@
+gcloud config set compute/zone europe-west2-b
+export PROJECT_ID="$(gcloud config get-value project -q)"
+
+docker run --name cassandra-test -d cassandra:latest
+wget -O beers.csv https://raw.githubusercontent.com/aak36/miniproject/master/beers.csv
+docker cp beers.csv cassandra-test:home/beers.csv
+
+
+
+docker exec -it cassandra-test cqlsh
+
+CREATE KEYSPACE beers WITH REPLICATION = {'class' : 'SimpleStrategy' , 'replication_factor' : 1};
+CREATE TABLE beers.data( ID int, Name text PRIMARY KEY, tagline text);
+COPY beers.data(id, name, tagline) FROM '/home/beers.csv' WITH DELIMITER=',' AND HEADER=TRUE;
+select * from beers.data;
+
+gcloud container clusters create cassandra --num-nodes=3 --machine-type "n1-standard-2"
+
+
+
+kubectl exec -it cassandra-8ztnz -- nodetool status
+kubectl cp beers.csv cassandra-8ztnz:/beers.csv
+kubectl exec -it cassandra-8ztnz cqlsh
+
+CREATE KEYSPACE beers WITH REPLICATION = {'class' : 'SimpleStrategy' , 'replication_factor' : 1};
+CREATE TABLE beers.data( ID int, Name text PRIMARY KEY, tagline text);
+COPY beers.data(id, name, tagline) FROM 'beers.csv' WITH DELIMITER=',' AND HEADER=TRUE;
+select * from beers.data;
