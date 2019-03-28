@@ -22,7 +22,7 @@ def requires_auth(f):
             return authenticate()
         return f(*args, **kwargs)
     return decorated
-
+# requires password and username to access API
 
 
 app = Flask(__name__)
@@ -32,11 +32,13 @@ api_url = 'https://api.punkapi.com/v2/'
 beers_url = 'https://api.punkapi.com/v2/beers'
 random_url = 'https://api.punkapi.com/v2/beers/random'
 id_url = 'https://api.punkapi.com/v2/beers/{id}'
+# URLS used to access different app routes
 
 @app.route('/')
 @requires_auth
 def hello():
     return "<h1> Welcome to Punk API!</h1>"
+#homepage of the app
 
 @app.route('/name', methods=['GET'])
 def names():
@@ -47,6 +49,7 @@ def names():
         names['id'].append(x['id'])
     #return jsonify(names)
     return render_template('table2.html', result = response)
+# returns the names of the different beers from the API with a GET request
 
 @app.route('/beers', methods=['GET'])
 def beers():
@@ -60,6 +63,7 @@ def beers():
         beers['food_pairing'].append(x['food_pairing'])
     #return jsonify(beers)
     return render_template('table.html', result = response)
+# returns beers and variables from a GET request 
 
 @app.route('/beers/random' , methods=['GET'])
 def random_list():
@@ -73,6 +77,7 @@ def random_list():
         beers['food_pairing'].append(x['food_pairing'])
     #return jsonify(beers)
     return render_template('table1.html', result = response)
+# gives a random beer and variables in a list
 
 @app.route('/beers/<id_name>' , methods=['GET'])
 def beer_id(id_name):
@@ -99,7 +104,7 @@ def beer_id(id_name):
     return jsonify(dict_test)
 
 #    return render_template('html.html', html = response)
-
+# search for beers using an id, if not found its given an error message on screen, if not the beer and variables will be shown
 
 if __name__ == '__main__':
 	app.run(port= 5000, debug=True)
